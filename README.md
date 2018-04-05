@@ -1,6 +1,6 @@
-# AndroidEqualizer
+# AndroidEqualizer   [![](https://jitpack.io/v/mosamabinomar/AndroidEqualizer.svg)](https://jitpack.io/#mosamabinomar/AndroidEqualizer)
+
 Android Equalizer View that can also manage the audio track frequencies 
-# quranVerses [![](https://jitpack.io/v/mosamabinomar/AndroidEqualizer.svg)](https://jitpack.io/#mosamabinomar/AndroidEqualizer)
 
 Add Equalizer in your Android app
 <div>
