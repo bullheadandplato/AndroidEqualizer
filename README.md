@@ -27,6 +27,13 @@ dependencies {
      implementation 'com.github.mosamabinomar:AndroidEqualizer:1.0'
 }
 ```
+for **AndroidX**
+
+```gradle
+dependencies {
+     implementation 'com.github.mosamabinomar:AndroidEqualizer:2.0'
+}
+```
 ### STEP 2
 Create a frame in your layout file. 
 ```    
