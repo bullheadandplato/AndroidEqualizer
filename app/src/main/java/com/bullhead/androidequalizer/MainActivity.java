@@ -3,8 +3,7 @@ package com.bullhead.androidequalizer;
 import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-
+import androidx.appcompat.app.AppCompatActivity;
 import com.bullhead.equalizer.EqualizerFragment;
 
 public class MainActivity extends AppCompatActivity {

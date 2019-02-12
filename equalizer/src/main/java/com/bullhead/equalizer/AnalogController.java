@@ -94,7 +94,7 @@ public class AnalogController extends View {
             canvas.drawCircle(x, y, ((float) radius / 15), circlePaint2);
         }
 
-        float tmp2 = (float) deg / 24;
+        float tmp2 = deg / 24;
         float x1 = midx + (float) (radius * ((float) 2 / 5) * Math.sin(2 * Math.PI * (1.0 - tmp2)));
         float y1 = midy + (float) (radius * ((float) 2 / 5) * Math.cos(2 * Math.PI * (1.0 - tmp2)));
         float x2 = midx + (float) (radius * ((float) 3 / 5) * Math.sin(2 * Math.PI * (1.0 - tmp2)));
@@ -158,7 +158,7 @@ public class AnalogController extends View {
                 downdeg = currdeg;
             }
 
-            angle = String.valueOf(String.valueOf(deg));
+            angle = String.valueOf(deg);
             invalidate();
             return true;
         }

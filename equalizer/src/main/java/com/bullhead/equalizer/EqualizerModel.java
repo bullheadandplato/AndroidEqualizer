@@ -5,12 +5,13 @@ package com.bullhead.equalizer;
  */
 
 public class EqualizerModel {
-    public boolean isEqualizerEnabled;
-    int[] seekbarpos = new int[5];
-    int presetPos;
-    short reverbPreset = -1, bassStrength = -1;
+    private boolean isEqualizerEnabled;
+    private int[] seekbarpos = new int[5];
+    private int presetPos;
+    private short reverbPreset;
+    private short bassStrength;
 
-    public EqualizerModel() {
+    EqualizerModel() {
         isEqualizerEnabled = true;
         reverbPreset = -1;
         bassStrength = -1;
