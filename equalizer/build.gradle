@@ -4,17 +4,12 @@ group="com.github.mosamabinomar"
 version="1.0"
 
 android {
-    compileSdkVersion 27
-
-
-
+    compileSdkVersion 28
     defaultConfig {
         minSdkVersion 21
-        targetSdkVersion 27
+        targetSdkVersion 28
         versionCode 1
         versionName "1.0"
-
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
     }
 
@@ -50,10 +45,8 @@ artifacts {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation 'com.android.support:appcompat-v7:27.1.0'
+    implementation 'com.android.support:appcompat-v7:28.0.0'
     implementation 'com.diogobernardino:williamchart:2.2'
     implementation 'com.h6ah4i.android.widget.verticalseekbar:verticalseekbar:0.7.0'
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.1'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+
 }
