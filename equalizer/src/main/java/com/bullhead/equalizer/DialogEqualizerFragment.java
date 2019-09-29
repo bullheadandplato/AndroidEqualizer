@@ -41,36 +41,28 @@ import java.util.ArrayList;
 
 public class DialogEqualizerFragment extends DialogFragment {
 
-    static         int              accentAlpha     = Color.BLUE;
-    static         int              darkBackground  = Color.GRAY;
-    static         int              textColor       = Color.WHITE;
-    static         int              themeColor      = Color.parseColor("#B24242");
-    private static int              backgroundColor = Color.WHITE;
-    public         Equalizer        mEqualizer;
-    public         BassBoost        bassBoost;
-    public         PresetReverb     presetReverb;
-    private        ImageView        backBtn;
-    private        TextView         fragTitle;
-    private        SwitchCompat     equalizerSwitch;
-    private        LineSet          dataset;
-    private        LineChartView    chart;
-    private        Paint            paint;
-    private        float[]          points;
-    private        int              y               = 0;
-    private        ImageView        spinnerDropDownIcon;
-    private        short            numberOfFrequencyBands;
-    private        LinearLayout     mLinearLayout;
-    private        SeekBar[]        seekBarFinal    = new SeekBar[5];
-    private        AnalogController bassController, reverbController;
-    private Spinner presetSpinner;
-    private Context ctx;
-    private int     audioSesionId;
+    private static int           accentAlpha     = Color.BLUE;
+    private static int           darkBackground  = Color.GRAY;
+    private static int           textColor       = Color.WHITE;
+    private static int           themeColor      = Color.parseColor("#B24242");
+    private static int           backgroundColor = Color.WHITE;
+    private        Equalizer     mEqualizer;
+    private        BassBoost     bassBoost;
+    private        PresetReverb  presetReverb;
+    private        LineSet       dataset;
+    private        LineChartView chart;
+    private        float[]       points;
+    private        int           y               = 0;
+    private        SeekBar[]     seekBarFinal    = new SeekBar[5];
+    private        Spinner       presetSpinner;
+    private        Context       ctx;
+    private        int           audioSesionId;
 
     public DialogEqualizerFragment() {
         // Required empty public constructor
     }
 
-    public static DialogEqualizerFragment newInstance(int audioSessionId) {
+    private static DialogEqualizerFragment newInstance(int audioSessionId) {
 
         Bundle args = new Bundle();
 
@@ -111,7 +103,7 @@ public class DialogEqualizerFragment extends DialogFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_equalizer, container, false);
+        return inflater.inflate(R.layout.dialog_fragment_equalizer, container, false);
     }
 
     @SuppressLint("SetTextI18n")
@@ -119,7 +111,7 @@ public class DialogEqualizerFragment extends DialogFragment {
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        backBtn = view.findViewById(R.id.equalizer_back_btn);
+        ImageView backBtn = view.findViewById(R.id.equalizer_back_btn);
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -129,10 +121,9 @@ public class DialogEqualizerFragment extends DialogFragment {
         backBtn.setColorFilter(textColor);
         view.findViewById(R.id.equalizerLayout).setBackgroundColor(backgroundColor);
 
-        fragTitle = view.findViewById(R.id.equalizer_fragment_title);
-
-
-        equalizerSwitch = view.findViewById(R.id.equalizer_switch);
+        TextView fragTitle = view.findViewById(R.id.equalizer_fragment_title);
+        fragTitle.setTextColor(textColor);
+        SwitchCompat equalizerSwitch = view.findViewById(R.id.equalizer_switch);
         equalizerSwitch.setChecked(true);
         equalizerSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -145,14 +136,14 @@ public class DialogEqualizerFragment extends DialogFragment {
 
 
         presetSpinner = view.findViewById(R.id.equalizer_preset_spinner);
-
+        presetSpinner.getBackground().setColorFilter(textColor, PorterDuff.Mode.SRC_ATOP);
 
         chart = view.findViewById(R.id.lineChart);
-        paint = new Paint();
+        Paint paint = new Paint();
         dataset = new LineSet();
 
-        bassController = view.findViewById(R.id.controllerBass);
-        reverbController = view.findViewById(R.id.controller3D);
+        AnalogController bassController   = view.findViewById(R.id.controllerBass);
+        AnalogController reverbController = view.findViewById(R.id.controller3D);
 
         bassController.setLabel("BASS");
         reverbController.setLabel("3D");
@@ -162,7 +153,7 @@ public class DialogEqualizerFragment extends DialogFragment {
         bassController.linePaint.setColor(themeColor);
         bassController.invalidate();
         reverbController.circlePaint2.setColor(themeColor);
-        bassController.linePaint.setColor(themeColor);
+        reverbController.linePaint.setColor(themeColor);
         reverbController.invalidate();
 
         if (!Settings.isEqualizerReloaded) {
@@ -237,14 +228,12 @@ public class DialogEqualizerFragment extends DialogFragment {
             }
         });
 
-        mLinearLayout = view.findViewById(R.id.equalizerContainer);
-
         TextView equalizerHeading = new TextView(ctx);
         equalizerHeading.setText(R.string.eq);
         equalizerHeading.setTextSize(20);
         equalizerHeading.setGravity(Gravity.CENTER_HORIZONTAL);
 
-        numberOfFrequencyBands = 5;
+        short numberOfFrequencyBands = 5;
 
         points = new float[numberOfFrequencyBands];
 
@@ -400,9 +389,7 @@ public class DialogEqualizerFragment extends DialogFragment {
         }
 
         presetSpinner.setAdapter(equalizerPresetSpinnerAdapter);
-        //presetSpinner.setDropDownWidth((Settings.screen_width * 3) / 4);
         if (Settings.isEqualizerReloaded && Settings.presetPos != 0) {
-//            correctPosition = false;
             presetSpinner.setSelection(Settings.presetPos);
         }
 
@@ -484,8 +471,8 @@ public class DialogEqualizerFragment extends DialogFragment {
             return this;
         }
 
-        public EqualizerFragment build() {
-            return EqualizerFragment.newInstance(id);
+        public DialogEqualizerFragment build() {
+            return DialogEqualizerFragment.newInstance(id);
         }
     }
 

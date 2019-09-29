@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">AndroidEqualizer</string>
+    <string name="show_eq_dialog">Show EQ Dialog</string>
 </resources>
