@@ -4,10 +4,9 @@ Android Equalizer View that can also manage the audio track frequencies
 
 Add Equalizer in your Android app
 <div>
-<img src="https://github.com/bullheadandplato/AndroidEqualizer/blob/master/screenshots/Screenshot_1569785199.png" width="300" height="500"/>
+  <img src="https://github.com/bullheadandplato/AndroidEqualizer/blob/master/screenshots/Screenshot_1569785199.png" width="300" height="500"/>
   <img src="https://raw.githubusercontent.com/mosamabinomar/AndroidEqualizer/master/screenshots/Screenshot_1522935541.png" width="300" height="500"/>
   <img src="https://raw.githubusercontent.com/mosamabinomar/AndroidEqualizer/master/screenshots/Screenshot_1522962328.png" width="300" height="500"/>
-  <br>
   <img src="https://raw.githubusercontent.com/mosamabinomar/AndroidEqualizer/master/screenshots/Screenshot_1522962331.png" width="300" height="500"/>
 </div>
 
