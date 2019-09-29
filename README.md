@@ -4,6 +4,7 @@ Android Equalizer View that can also manage the audio track frequencies
 
 Add Equalizer in your Android app
 <div>
+<img src="https://github.com/bullheadandplato/AndroidEqualizer/blob/master/screenshots/Screenshot_1569785199.png" width="300" height="500"/>
   <img src="https://raw.githubusercontent.com/mosamabinomar/AndroidEqualizer/master/screenshots/Screenshot_1522935541.png" width="300" height="500"/>
   <img src="https://raw.githubusercontent.com/mosamabinomar/AndroidEqualizer/master/screenshots/Screenshot_1522962328.png" width="300" height="500"/>
   <br>
@@ -21,20 +22,35 @@ allprojects {
 }
 ```
 and:
+```gradle
+dependencies {
+      implementation 'com.github.bullheadandplato:AndroidEqualizer:2.1'
+}
+```
+
+if not using **AndroidX**.
+***it will not have `DialogEqualizerFragment` or any other improvements***
 
 ```gradle
 dependencies {
-     implementation 'com.github.mosamabinomar:AndroidEqualizer:1.0'
+     implementation 'com.github.bullheadandplato:AndroidEqualizer:1.0'
 }
 ```
-for **AndroidX**
 
-```gradle
-dependencies {
-     implementation 'com.github.mosamabinomar:AndroidEqualizer:2.0'
-}
-```
 ### STEP 2
+#### For Equalizer in dialog
+```
+ DialogEqualizerFragment fragment = DialogEqualizerFragment.newBuilder()
+                    .setAudioSessionId(sessionId)
+                    .themeColor(ContextCompat.getColor(this, R.color.primaryColor))
+                    .textColor(ContextCompat.getColor(this, R.color.textColor))
+                    .accentAlpha(ContextCompat.getColor(this, R.color.playingCardColor))
+                    .darkColor(ContextCompat.getColor(this, R.color.primaryDarkColor))
+                    .setAccentColor(ContextCompat.getColor(this, R.color.secondaryColor))
+                    .build();
+            fragment.show(getSupportFragmentManager(), "eq");
+```
+#### For Equalizer in your view
 Create a frame in your layout file. 
 ```    
 <FrameLayout
@@ -47,7 +63,6 @@ Create a frame in your layout file.
         app:layout_constraintTop_toTopOf="parent" />
         
 ```
-### STEP 3
 In your Activity class
 ```
  int sessionId = mediaPlayer.getAudioSessionId();
@@ -60,4 +75,5 @@ In your Activity class
                 .replace(R.id.eqFrame, equalizerFragment)
                 .commit();
 ```
+
 **This work is mostly borrowed from https://github.com/harjot-oberai/MusicDNA**
