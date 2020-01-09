@@ -1,17 +1,19 @@
 package com.bullhead.equalizer;
 
+import java.io.Serializable;
+
 /**
  * Created by Harjot on 09-Dec-16.
  */
 
-public class EqualizerModel {
+public class EqualizerModel implements Serializable {
     private boolean isEqualizerEnabled;
     private int[] seekbarpos = new int[5];
     private int presetPos;
     private short reverbPreset;
     private short bassStrength;
 
-    EqualizerModel() {
+    public EqualizerModel() {
         isEqualizerEnabled = true;
         reverbPreset = -1;
         bassStrength = -1;
