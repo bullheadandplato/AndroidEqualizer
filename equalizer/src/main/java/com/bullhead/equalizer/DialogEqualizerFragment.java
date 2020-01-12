@@ -41,22 +41,25 @@ import java.util.ArrayList;
 
 public class DialogEqualizerFragment extends DialogFragment {
 
-    private static int           accentAlpha     = Color.BLUE;
-    private static int           darkBackground  = Color.GRAY;
-    private static int           textColor       = Color.WHITE;
-    private static int           themeColor      = Color.parseColor("#B24242");
-    private static int           backgroundColor = Color.WHITE;
-    private        Equalizer     mEqualizer;
-    private        BassBoost     bassBoost;
-    private        PresetReverb  presetReverb;
-    private        LineSet       dataset;
-    private        LineChartView chart;
-    private        float[]       points;
-    private        int           y               = 0;
-    private        SeekBar[]     seekBarFinal    = new SeekBar[5];
-    private        Spinner       presetSpinner;
-    private        Context       ctx;
-    private        int           audioSesionId;
+    public static final String ARG_AUDIO_SESSIOIN_ID = "audio_session_id";
+
+    private static int accentAlpha = Color.BLUE;
+    private static int darkBackground = Color.GRAY;
+    private static int textColor = Color.WHITE;
+    private static int themeColor = Color.parseColor("#B24242");
+    private static int backgroundColor = Color.WHITE;
+    private static int themeRes = 0;
+    private Equalizer mEqualizer;
+    private BassBoost bassBoost;
+    private PresetReverb presetReverb;
+    private LineSet dataset;
+    private LineChartView chart;
+    private float[] points;
+    private int y = 0;
+    private SeekBar[] seekBarFinal = new SeekBar[5];
+    private Spinner presetSpinner;
+    private Context ctx;
+    private int audioSesionId;
 
     public DialogEqualizerFragment() {
         // Required empty public constructor
@@ -65,9 +68,9 @@ public class DialogEqualizerFragment extends DialogFragment {
     private static DialogEqualizerFragment newInstance(int audioSessionId) {
 
         Bundle args = new Bundle();
+        args.putInt(ARG_AUDIO_SESSIOIN_ID, audioSessionId);
 
         DialogEqualizerFragment fragment = new DialogEqualizerFragment();
-        fragment.audioSesionId = audioSessionId;
         fragment.setArguments(args);
         return fragment;
     }
@@ -77,21 +80,49 @@ public class DialogEqualizerFragment extends DialogFragment {
     }
 
     @Override
+    public int getTheme() {
+        if (themeRes != 0) return themeRes;
+        else return super.getTheme();
+    }
+
+    @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Settings.isEditing = true;
+
+        if (getArguments() != null && getArguments().containsKey(ARG_AUDIO_SESSIOIN_ID)) {
+            audioSesionId = getArguments().getInt(ARG_AUDIO_SESSIOIN_ID);
+        }
+
+        if (Settings.equalizerModel == null) {
+            Settings.equalizerModel = new EqualizerModel();
+            Settings.equalizerModel.setReverbPreset(PresetReverb.PRESET_NONE);
+            Settings.equalizerModel.setBassStrength((short) (1000 / 19));
+        }
+
         mEqualizer = new Equalizer(0, audioSesionId);
+
         bassBoost = new BassBoost(0, audioSesionId);
         bassBoost.setEnabled(true);
         BassBoost.Settings bassBoostSettingTemp = bassBoost.getProperties();
-        BassBoost.Settings bassBoostSetting     = new BassBoost.Settings(bassBoostSettingTemp.toString());
-        bassBoostSetting.strength = (1000 / 19);
+        BassBoost.Settings bassBoostSetting = new BassBoost.Settings(bassBoostSettingTemp.toString());
+        bassBoostSetting.strength = Settings.equalizerModel.getBassStrength();
         bassBoost.setProperties(bassBoostSetting);
 
         presetReverb = new PresetReverb(0, audioSesionId);
-        presetReverb.setPreset(PresetReverb.PRESET_NONE);
+        presetReverb.setPreset(Settings.equalizerModel.getReverbPreset());
         presetReverb.setEnabled(true);
-        Settings.equalizerModel = new EqualizerModel();
+
         mEqualizer.setEnabled(true);
+
+        if (Settings.presetPos == 0) {
+            for (short bandIdx = 0; bandIdx < mEqualizer.getNumberOfBands(); bandIdx++) {
+                mEqualizer.setBandLevel(bandIdx, (short) Settings.seekbarpos[bandIdx]);
+            }
+        } else {
+            mEqualizer.usePreset((short) Settings.presetPos);
+        }
     }
 
     @Override
@@ -142,7 +173,7 @@ public class DialogEqualizerFragment extends DialogFragment {
         Paint paint = new Paint();
         dataset = new LineSet();
 
-        AnalogController bassController   = view.findViewById(R.id.controllerBass);
+        AnalogController bassController = view.findViewById(R.id.controllerBass);
         AnalogController reverbController = view.findViewById(R.id.controller3D);
 
         bassController.setLabel("BASS");
@@ -241,7 +272,7 @@ public class DialogEqualizerFragment extends DialogFragment {
         final short upperEqualizerBandLevel = mEqualizer.getBandLevelRange()[1];
 
         for (short i = 0; i < numberOfFrequencyBands; i++) {
-            final short    equalizerBandIndex      = i;
+            final short equalizerBandIndex = i;
             final TextView frequencyHeaderTextView = new TextView(ctx);
             frequencyHeaderTextView.setLayoutParams(new ViewGroup.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT,
@@ -276,7 +307,7 @@ public class DialogEqualizerFragment extends DialogFragment {
             );
             layoutParams.weight = 1;
 
-            SeekBar  seekBar  = new SeekBar(ctx);
+            SeekBar seekBar = new SeekBar(ctx);
             TextView textView = new TextView(ctx);
             switch (i) {
                 case 0:
@@ -436,10 +467,29 @@ public class DialogEqualizerFragment extends DialogFragment {
     public void onDestroy() {
         super.onDestroy();
 
+        if (mEqualizer != null){
+            mEqualizer.release();
+        }
+
+        if (bassBoost != null){
+            bassBoost.release();
+        }
+
+        if (presetReverb != null){
+            presetReverb.release();
+        }
+
+        Settings.isEditing = false;
+
     }
 
     public static class Builder {
         private int id = -1;
+
+        public Builder setThemeRes(int res) {
+            themeRes = res;
+            return this;
+        }
 
         public Builder setAudioSessionId(int id) {
             this.id = id;

@@ -33,6 +33,8 @@ import java.util.ArrayList;
  */
 public class EqualizerFragment extends Fragment {
 
+    public static final String ARG_AUDIO_SESSIOIN_ID = "audio_session_id";
+
     ImageView backBtn;
     TextView fragTitle;
     SwitchCompat equalizerSwitch;
@@ -70,13 +72,14 @@ public class EqualizerFragment extends Fragment {
     private int audioSesionId;
 
     static int themeColor = Color.parseColor("#B24242");
+    static boolean showBackButton = true;
 
     public static EqualizerFragment newInstance(int audioSessionId) {
 
         Bundle args = new Bundle();
+        args.putInt(ARG_AUDIO_SESSIOIN_ID, audioSessionId);
 
         EqualizerFragment fragment = new EqualizerFragment();
-        fragment.audioSesionId = audioSessionId;
         fragment.setArguments(args);
         return fragment;
     }
@@ -84,19 +87,42 @@ public class EqualizerFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Settings.isEditing = true;
+
+        if (getArguments() != null && getArguments().containsKey(ARG_AUDIO_SESSIOIN_ID)){
+            audioSesionId = getArguments().getInt(ARG_AUDIO_SESSIOIN_ID);
+        }
+
+        if (Settings.equalizerModel == null){
+            Settings.equalizerModel = new EqualizerModel();
+            Settings.equalizerModel.setReverbPreset(PresetReverb.PRESET_NONE);
+            Settings.equalizerModel.setBassStrength((short) (1000 / 19));
+        }
+
         mEqualizer = new Equalizer(0, audioSesionId);
+
         bassBoost = new BassBoost(0, audioSesionId);
-        bassBoost.setEnabled(true);
+        bassBoost.setEnabled(Settings.isEqualizerEnabled);
         BassBoost.Settings bassBoostSettingTemp = bassBoost.getProperties();
         BassBoost.Settings bassBoostSetting = new BassBoost.Settings(bassBoostSettingTemp.toString());
-        bassBoostSetting.strength = (1000 / 19);
+        bassBoostSetting.strength = Settings.equalizerModel.getBassStrength();
         bassBoost.setProperties(bassBoostSetting);
 
         presetReverb = new PresetReverb(0, audioSesionId);
-        presetReverb.setPreset(PresetReverb.PRESET_NONE);
-        presetReverb.setEnabled(true);
-        Settings.equalizerModel = new EqualizerModel();
-        mEqualizer.setEnabled(true);
+        presetReverb.setPreset(Settings.equalizerModel.getReverbPreset());
+        presetReverb.setEnabled(Settings.isEqualizerEnabled);
+
+        mEqualizer.setEnabled(Settings.isEqualizerEnabled);
+
+        if (Settings.presetPos == 0){
+            for (short bandIdx = 0; bandIdx < mEqualizer.getNumberOfBands(); bandIdx++) {
+                mEqualizer.setBandLevel(bandIdx, (short) Settings.seekbarpos[bandIdx]);
+            }
+        }
+        else {
+            mEqualizer.usePreset((short) Settings.presetPos);
+        }
     }
 
     @Override
@@ -117,6 +143,7 @@ public class EqualizerFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         backBtn = view.findViewById(R.id.equalizer_back_btn);
+        backBtn.setVisibility(showBackButton ? View.VISIBLE : View.GONE);
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -130,13 +157,15 @@ public class EqualizerFragment extends Fragment {
 
 
         equalizerSwitch = view.findViewById(R.id.equalizer_switch);
-        equalizerSwitch.setChecked(true);
+        equalizerSwitch.setChecked(Settings.isEqualizerEnabled);
         equalizerSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 mEqualizer.setEnabled(isChecked);
                 bassBoost.setEnabled(isChecked);
                 presetReverb.setEnabled(isChecked);
+                Settings.isEqualizerEnabled = isChecked;
+                Settings.equalizerModel.setEqualizerEnabled(isChecked);
             }
         });
 
@@ -338,6 +367,7 @@ public class EqualizerFragment extends Fragment {
                 Settings.seekbarpos[i] = mEqualizer.getBandLevel(equalizerBandIndex);
                 Settings.isEqualizerReloaded = true;
             }
+
             seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
                 @Override
                 public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -361,7 +391,6 @@ public class EqualizerFragment extends Fragment {
 
                 }
             });
-
         }
 
         equalizeSound();
@@ -453,7 +482,19 @@ public class EqualizerFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        if (mEqualizer != null){
+            mEqualizer.release();
+        }
 
+        if (bassBoost != null){
+            bassBoost.release();
+        }
+
+        if (presetReverb != null){
+            presetReverb.release();
+        }
+
+        Settings.isEditing = false;
     }
 
     public static Builder newBuilder() {
@@ -470,6 +511,11 @@ public class EqualizerFragment extends Fragment {
 
         public Builder setAccentColor(int color) {
             themeColor = color;
+            return this;
+        }
+
+        public Builder setShowBackButton(boolean show){
+            showBackButton = show;
             return this;
         }
 
