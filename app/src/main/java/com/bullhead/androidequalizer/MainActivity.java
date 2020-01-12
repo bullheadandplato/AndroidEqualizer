@@ -43,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
         if (sessionId > 0) {
             DialogEqualizerFragment fragment = DialogEqualizerFragment.newBuilder()
                     .setAudioSessionId(sessionId)
+                    .title(R.string.app_name)
                     .themeColor(ContextCompat.getColor(this, R.color.primaryColor))
                     .textColor(ContextCompat.getColor(this, R.color.textColor))
                     .accentAlpha(ContextCompat.getColor(this, R.color.playingCardColor))

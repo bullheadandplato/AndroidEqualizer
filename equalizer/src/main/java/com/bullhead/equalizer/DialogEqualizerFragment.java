@@ -11,6 +11,8 @@ import android.media.audiofx.BassBoost;
 import android.media.audiofx.Equalizer;
 import android.media.audiofx.PresetReverb;
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,6 +30,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.DialogFragment;
 
@@ -40,26 +43,32 @@ import java.util.ArrayList;
 
 
 public class DialogEqualizerFragment extends DialogFragment {
+    public static final  String ARG_AUDIO_SESSIOIN_ID = "audio_session_id";
+    private static final String TAG                   = DialogEqualizerFragment.class.getSimpleName();
+    private static       int    accentAlpha           = Color.BLUE;
+    private static       int    darkBackground        = Color.GRAY;
+    private static       int    textColor             = Color.WHITE;
+    private static       int    themeColor            = Color.parseColor("#B24242");
+    private static       int    backgroundColor       = Color.WHITE;
+    private static       int    themeRes              = 0;
+    private static       String titleString           = "";
+    private static       int    titleRes              = 0;
 
-    public static final String ARG_AUDIO_SESSIOIN_ID = "audio_session_id";
+    private Equalizer        mEqualizer;
+    private BassBoost        bassBoost;
+    private PresetReverb     presetReverb;
+    private LineSet          dataset;
+    private LineChartView    chart;
+    private float[]          points;
+    private int              y            = 0;
+    private SeekBar[]        seekBarFinal = new SeekBar[5];
+    private Spinner          presetSpinner;
+    private Context          ctx;
+    private int              audioSesionId;
+    private TextView         titleTextView;
+    private AnalogController bassController;
+    private AnalogController reverbController;
 
-    private static int accentAlpha = Color.BLUE;
-    private static int darkBackground = Color.GRAY;
-    private static int textColor = Color.WHITE;
-    private static int themeColor = Color.parseColor("#B24242");
-    private static int backgroundColor = Color.WHITE;
-    private static int themeRes = 0;
-    private Equalizer mEqualizer;
-    private BassBoost bassBoost;
-    private PresetReverb presetReverb;
-    private LineSet dataset;
-    private LineChartView chart;
-    private float[] points;
-    private int y = 0;
-    private SeekBar[] seekBarFinal = new SeekBar[5];
-    private Spinner presetSpinner;
-    private Context ctx;
-    private int audioSesionId;
 
     public DialogEqualizerFragment() {
         // Required empty public constructor
@@ -106,7 +115,7 @@ public class DialogEqualizerFragment extends DialogFragment {
         bassBoost = new BassBoost(0, audioSesionId);
         bassBoost.setEnabled(true);
         BassBoost.Settings bassBoostSettingTemp = bassBoost.getProperties();
-        BassBoost.Settings bassBoostSetting = new BassBoost.Settings(bassBoostSettingTemp.toString());
+        BassBoost.Settings bassBoostSetting     = new BassBoost.Settings(bassBoostSettingTemp.toString());
         bassBoostSetting.strength = Settings.equalizerModel.getBassStrength();
         bassBoost.setProperties(bassBoostSetting);
 
@@ -152,8 +161,17 @@ public class DialogEqualizerFragment extends DialogFragment {
         backBtn.setColorFilter(textColor);
         view.findViewById(R.id.equalizerLayout).setBackgroundColor(backgroundColor);
 
-        TextView fragTitle = view.findViewById(R.id.equalizer_fragment_title);
-        fragTitle.setTextColor(textColor);
+        titleTextView = view.findViewById(R.id.equalizer_fragment_title);
+        titleTextView.setTextColor(textColor);
+        if (titleRes != 0) {
+            try {
+                titleTextView.setText(getString(titleRes));
+            } catch (Exception e) {
+                Log.e(TAG, "onViewCreated: unable to set title because " + e.getLocalizedMessage());
+            }
+        } else if (!TextUtils.isEmpty(titleString)) {
+            titleTextView.setText(titleString);
+        }
         SwitchCompat equalizerSwitch = view.findViewById(R.id.equalizer_switch);
         equalizerSwitch.setChecked(true);
         equalizerSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -173,8 +191,8 @@ public class DialogEqualizerFragment extends DialogFragment {
         Paint paint = new Paint();
         dataset = new LineSet();
 
-        AnalogController bassController = view.findViewById(R.id.controllerBass);
-        AnalogController reverbController = view.findViewById(R.id.controller3D);
+        bassController   = view.findViewById(R.id.controllerBass);
+        reverbController = view.findViewById(R.id.controller3D);
 
         bassController.setLabel("BASS");
         reverbController.setLabel("3D");
@@ -272,7 +290,7 @@ public class DialogEqualizerFragment extends DialogFragment {
         final short upperEqualizerBandLevel = mEqualizer.getBandLevelRange()[1];
 
         for (short i = 0; i < numberOfFrequencyBands; i++) {
-            final short equalizerBandIndex = i;
+            final short    equalizerBandIndex      = i;
             final TextView frequencyHeaderTextView = new TextView(ctx);
             frequencyHeaderTextView.setLayoutParams(new ViewGroup.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT,
@@ -307,7 +325,7 @@ public class DialogEqualizerFragment extends DialogFragment {
             );
             layoutParams.weight = 1;
 
-            SeekBar seekBar = new SeekBar(ctx);
+            SeekBar  seekBar  = new SeekBar(ctx);
             TextView textView = new TextView(ctx);
             switch (i) {
                 case 0:
@@ -350,15 +368,15 @@ public class DialogEqualizerFragment extends DialogFragment {
                 points[i] = mEqualizer.getBandLevel(equalizerBandIndex) - lowerEqualizerBandLevel;
                 dataset.addPoint(frequencyHeaderTextView.getText().toString(), points[i]);
                 seekBar.setProgress(mEqualizer.getBandLevel(equalizerBandIndex) - lowerEqualizerBandLevel);
-                Settings.seekbarpos[i] = mEqualizer.getBandLevel(equalizerBandIndex);
+                Settings.seekbarpos[i]       = mEqualizer.getBandLevel(equalizerBandIndex);
                 Settings.isEqualizerReloaded = true;
             }
             seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
                 @Override
                 public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                     mEqualizer.setBandLevel(equalizerBandIndex, (short) (progress + lowerEqualizerBandLevel));
-                    points[seekBar.getId()] = mEqualizer.getBandLevel(equalizerBandIndex) - lowerEqualizerBandLevel;
-                    Settings.seekbarpos[seekBar.getId()] = (progress + lowerEqualizerBandLevel);
+                    points[seekBar.getId()]                                  = mEqualizer.getBandLevel(equalizerBandIndex) - lowerEqualizerBandLevel;
+                    Settings.seekbarpos[seekBar.getId()]                     = (progress + lowerEqualizerBandLevel);
                     Settings.equalizerModel.getSeekbarpos()[seekBar.getId()] = (progress + lowerEqualizerBandLevel);
                     dataset.updateValues(points);
                     chart.notifyDataUpdate();
@@ -407,6 +425,20 @@ public class DialogEqualizerFragment extends DialogFragment {
 
     }
 
+
+    public TextView getTitleTextView() {
+        return titleTextView;
+    }
+
+    public AnalogController getBassController() {
+        return bassController;
+    }
+
+    public AnalogController getReverbController() {
+        return reverbController;
+    }
+
+
     public void equalizeSound() {
         ArrayList<String> equalizerPresetNames = new ArrayList<>();
         ArrayAdapter<String> equalizerPresetSpinnerAdapter = new ArrayAdapter<>(ctx,
@@ -437,8 +469,8 @@ public class DialogEqualizerFragment extends DialogFragment {
 
                         for (short i = 0; i < numberOfFreqBands; i++) {
                             seekBarFinal[i].setProgress(mEqualizer.getBandLevel(i) - lowerEqualizerBandLevel);
-                            points[i] = mEqualizer.getBandLevel(i) - lowerEqualizerBandLevel;
-                            Settings.seekbarpos[i] = mEqualizer.getBandLevel(i);
+                            points[i]                                  = mEqualizer.getBandLevel(i) - lowerEqualizerBandLevel;
+                            Settings.seekbarpos[i]                     = mEqualizer.getBandLevel(i);
                             Settings.equalizerModel.getSeekbarpos()[i] = mEqualizer.getBandLevel(i);
                         }
                         dataset.updateValues(points);
@@ -467,15 +499,15 @@ public class DialogEqualizerFragment extends DialogFragment {
     public void onDestroy() {
         super.onDestroy();
 
-        if (mEqualizer != null){
+        if (mEqualizer != null) {
             mEqualizer.release();
         }
 
-        if (bassBoost != null){
+        if (bassBoost != null) {
             bassBoost.release();
         }
 
-        if (presetReverb != null){
+        if (presetReverb != null) {
             presetReverb.release();
         }
 
@@ -518,6 +550,16 @@ public class DialogEqualizerFragment extends DialogFragment {
 
         public Builder accentAlpha(int color) {
             accentAlpha = color;
+            return this;
+        }
+
+        public Builder title(@StringRes int title) {
+            titleRes = title;
+            return this;
+        }
+
+        public Builder title(@NonNull String title) {
+            titleString = title;
             return this;
         }
 
