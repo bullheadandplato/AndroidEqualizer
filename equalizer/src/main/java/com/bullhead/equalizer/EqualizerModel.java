@@ -8,15 +8,15 @@ import java.io.Serializable;
 
 public class EqualizerModel implements Serializable {
     private boolean isEqualizerEnabled;
-    private int[] seekbarpos = new int[5];
-    private int presetPos;
-    private short reverbPreset;
-    private short bassStrength;
+    private int[]   seekbarpos = new int[5];
+    private int     presetPos;
+    private short   reverbPreset;
+    private short   bassStrength;
 
     public EqualizerModel() {
         isEqualizerEnabled = true;
-        reverbPreset = -1;
-        bassStrength = -1;
+        reverbPreset       = -1;
+        bassStrength       = -1;
     }
 
     public boolean isEqualizerEnabled() {

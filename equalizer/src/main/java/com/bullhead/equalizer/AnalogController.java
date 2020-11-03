@@ -16,7 +16,7 @@ public class AnalogController extends View {
     float midx, midy;
     Paint textPaint, circlePaint, circlePaint2, linePaint;
     String angle;
-    float currdeg, deg = 3, downdeg;
+    float  currdeg, deg = 3, downdeg;
 
     int progressColor, lineColor;
 
@@ -75,11 +75,11 @@ public class AnalogController extends View {
         midx = canvas.getWidth() / 2;
         midy = canvas.getHeight() / 2;
 
-        int ang = 0;
-        float x = 0, y = 0;
-        int radius = (int) (Math.min(midx, midy) * ((float) 14.5 / 16));
-        float deg2 = Math.max(3, deg);
-        float deg3 = Math.min(deg, 21);
+        int   ang    = 0;
+        float x      = 0, y = 0;
+        int   radius = (int) (Math.min(midx, midy) * ((float) 14.5 / 16));
+        float deg2   = Math.max(3, deg);
+        float deg3   = Math.min(deg, 21);
         for (int i = (int) (deg2); i < 22; i++) {
             float tmp = (float) i / 24;
             x = midx + (float) (radius * Math.sin(2 * Math.PI * (1.0 - tmp)));
@@ -95,10 +95,10 @@ public class AnalogController extends View {
         }
 
         float tmp2 = deg / 24;
-        float x1 = midx + (float) (radius * ((float) 2 / 5) * Math.sin(2 * Math.PI * (1.0 - tmp2)));
-        float y1 = midy + (float) (radius * ((float) 2 / 5) * Math.cos(2 * Math.PI * (1.0 - tmp2)));
-        float x2 = midx + (float) (radius * ((float) 3 / 5) * Math.sin(2 * Math.PI * (1.0 - tmp2)));
-        float y2 = midy + (float) (radius * ((float) 3 / 5) * Math.cos(2 * Math.PI * (1.0 - tmp2)));
+        float x1   = midx + (float) (radius * ((float) 2 / 5) * Math.sin(2 * Math.PI * (1.0 - tmp2)));
+        float y1   = midy + (float) (radius * ((float) 2 / 5) * Math.cos(2 * Math.PI * (1.0 - tmp2)));
+        float x2   = midx + (float) (radius * ((float) 3 / 5) * Math.sin(2 * Math.PI * (1.0 - tmp2)));
+        float y2   = midy + (float) (radius * ((float) 3 / 5) * Math.cos(2 * Math.PI * (1.0 - tmp2)));
 
         circlePaint.setColor(Color.parseColor("#222222"));
         canvas.drawCircle(midx, midy, radius * ((float) 13 / 15), circlePaint);
