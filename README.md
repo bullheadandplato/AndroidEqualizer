@@ -23,7 +23,7 @@ allprojects {
 and:
 ```gradle
 dependencies {
-      implementation 'com.github.bullheadandplato:AndroidEqualizer:2.1'
+      implementation 'com.github.bullheadandplato:AndroidEqualizer:2.2'
 }
 ```
 
