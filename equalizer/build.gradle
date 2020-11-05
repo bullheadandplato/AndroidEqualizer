@@ -4,10 +4,10 @@ group="com.github.mosamabinomar"
 version="2.0"
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 30
     defaultConfig {
         minSdkVersion 21
-        targetSdkVersion 28
+        targetSdkVersion 30
         versionCode 2
         versionName "2.0"
 
