@@ -113,7 +113,9 @@
                 <com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBarWrapper
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:layout_weight="8">
+                    android:layout_weight="8"
+                    android:layoutDirection="ltr"
+                    >
 
                     <com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBar
                         android:id="@+id/seekBar1"
@@ -142,7 +144,9 @@
                 <com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBarWrapper
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:layout_weight="8">
+                    android:layout_weight="8"
+                    android:layoutDirection="ltr"
+                    >
 
                     <com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBar
                         android:id="@+id/seekBar2"
@@ -171,7 +175,9 @@
                 <com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBarWrapper
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:layout_weight="8">
+                    android:layout_weight="8"
+                    android:layoutDirection="ltr"
+                    >
 
                     <com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBar
                         android:id="@+id/seekBar3"
@@ -200,7 +206,9 @@
                 <com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBarWrapper
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:layout_weight="8">
+                    android:layout_weight="8"
+                    android:layoutDirection="ltr"
+                    >
 
                     <com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBar
                         android:id="@+id/seekBar4"
@@ -229,7 +237,9 @@
                 <com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBarWrapper
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:layout_weight="8">
+                    android:layout_weight="8"
+                    android:layoutDirection="ltr"
+                    >
 
                     <com.h6ah4i.android.widget.verticalseekbar.VerticalSeekBar
                         android:id="@+id/seekBar5"
