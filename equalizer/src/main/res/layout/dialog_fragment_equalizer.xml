@@ -62,7 +62,9 @@
             android:layout_height="0dp"
             android:layout_marginLeft="9dp"
             android:layout_marginRight="9dp"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:layoutDirection="ltr"
+            >
 
             <View
                 android:layout_width="50dp"
