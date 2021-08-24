@@ -12,13 +12,14 @@ Add Equalizer in your Android app
 
 ## How To Use
 ### STEP 1
-Add it to your build.gradle with:
+In settings.gradle you can add the repositories you want to add to the project:
 ```gradle
-allprojects {
-    repositories {
-        maven { url "https://jitpack.io" }
+repositories {
+        google()
+        jcenter() // Warning: this repository is going to shut down soon
+        mavenCentral()
+        maven { url 'https://www.jitpack.io' } // this is the line to be added
     }
-}
 ```
 and:
 ```gradle
